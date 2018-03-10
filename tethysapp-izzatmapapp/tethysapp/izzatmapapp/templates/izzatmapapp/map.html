@@ -1,0 +1,189 @@
+{% extends "izzatmapapp/base.html" %}
+{% block app_content %}
+
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
+<script src="https://js.arcgis.com/4.6/"></script>
+<style>
+
+body {background-color: powderblue;}
+h1   {color: blue;}
+p    {color: red;}
+
+.button {
+    background-color:#f44336;
+    border: black;
+    color: white;
+    padding: 10px 26px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+  .button {border-radius: 8px;}
+
+#viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 700px;
+    width: 700px;
+  }
+
+
+</style>
+<script>
+var map;
+var road_layer;
+var raster_layer;
+
+
+function myFunction() {
+
+	road_layer.visible = false;
+	raster_layer.visible = false;
+
+    var roads_checkBox = document.getElementById("Roads");
+	var raster_checkBox = document.getElementById("DEM");
+
+    if (roads_checkBox.checked == true){
+        road_layer.visible = true;
+    };
+	if (raster_checkBox.checked == true){
+       raster_layer.visible = true;
+    };
+};
+
+require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/layers/FeatureLayer",
+  "esri/layers/MapImageLayer",
+  "dojo/domReady!"
+], function(Map, MapView, FeatureLayer, MapImageLayer) {
+   map = new Map({
+    basemap: "streets"
+  });
+
+	raster_layer = new MapImageLayer({
+        url: "http://geoserver2.byu.edu/arcgis/rest/services/TeamWon/utah_raster/MapServer"
+		})
+
+map.layers.add(raster_layer);
+
+  var view = new MapView({
+    container: "viewDiv",
+    map: map,
+center: [-111.660343, 40.253176],
+zoom: 10
+  });
+      var template1 = { // autocasts as new PopupTemplate()
+        title: "Resturnat Name: {Field1}",
+        content:
+          "<ul><li>{Field1} Located in Provo Utah since 1881</li>" ,
+               fieldInfos: [{
+          fieldName: "Field1",
+          format: {
+            digitSeparator: true, // Use a comma separator for large numbers
+            places: 0 // Sets the number of decimal places to 0 and rounds up
+          }
+
+      }]
+	  };
+	  var template = { // autocasts as new PopupTemplate()
+        title: "Route Name: {Name}",
+        content:
+          "<ul><li>{Name} Construction started 1921</li>"		  ,
+
+               fieldInfos: [{
+          fieldName: "Name",
+          format: {
+            digitSeparator: true, // Use a comma separator for large numbers
+            places: 0 // Sets the number of decimal places to 0 and rounds up
+          }
+
+        }]
+      };
+
+	var food_layer = new FeatureLayer({
+        url: "http://geoserver2.byu.edu/arcgis/rest/services/TeamWon/IzzatMyMapService/FeatureServer/0",
+        outFields: ["*"],
+        popupTemplate: template1
+      });
+      map.add(food_layer);
+
+
+	road_layer = new FeatureLayer({
+        url: "http://geoserver2.byu.edu/arcgis/rest/services/TeamWon/natesroads/FeatureServer/0",
+        outFields: ["*"],
+        popupTemplate: template
+      });
+      map.add(road_layer);
+
+});
+
+</script>
+
+
+<h1><b><u style="color:blue;"><font-family: times new roman;
+    font-size: 50%;> Mobility As a Service Map View </b></u></h1>
+<h3><u style="color:Green;"> Options</u> <u style="color:Green;"> Advanced Options</u></h3>
+
+<button class="button">Fast</button>
+<button class="button">Cheap</button>
+
+<hr>
+   <table>
+     <tr>
+     <td style="vertical-align: top"><u style="color:Red;"> Transportation Modes</u>
+
+
+
+	<form>
+	<input type="checkbox" id="Roads" onclick="myFunction()" checked> Roads
+	</form>
+	<form>
+	<input type="checkbox" id="DEM" onclick="myFunction()" checked> DEM
+	</form>
+
+
+
+  <form>
+
+    <input type="checkbox"> UBER/Lyft
+  </form>
+
+  <form>
+
+    <input type="checkbox"> UTA Busses
+  </form>
+  <form>
+    <input type="checkbox"> UTA Trains
+</form>
+
+  <form>
+    <input type="checkbox"> Walking
+    </form>
+  <form>
+    <input type="checkbox"> Sponsored Reduced Fare
+  </form>
+
+     </td>
+  <td><div id="viewDiv"></div></td>
+     </tr>
+   </table>
+
+
+
+  <hr>
+  <form>
+  <button type="button">Start Location</button>
+    <form>
+  <button type="button">End Location</button>
+      </form>
+      <form>
+  <button type="button">Get Rates</button>
+        </form>
+
+{% endblock %}

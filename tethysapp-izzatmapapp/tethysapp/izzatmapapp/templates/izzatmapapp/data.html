@@ -1,0 +1,25 @@
+{% extends "izzatmapapp/base.html" %}
+{% load tethys_gizmos %}
+
+{% block app_content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <meta charset="UTF-8">
+    <title>data</title>
+    <h2> <font color="red">Data Services</font></h2>
+    <hr>
+    <h4><u>Brigham Young University Geoserver</u></h4>
+    <p>We have used BYU geoserver to store our data, we have used Feature server and Map server. </p>
+    <p>for access to our folder which contains all the services, please clcik on one of the following:</p>
+    <p>a. <a href="http://geoserver2.byu.edu/arcgis/rest/services/TeamWon" target="_blank">Access to all of our services.</a></p>
+    <p>b. <a href="http://geoserver2.byu.edu/arcgis/rest/services/TeamWon/feature_food/FeatureServer" target="_blank">Access to Food Feature Server.</a></p>
+    <p>c. <a href="http://geoserver2.byu.edu/arcgis/rest/services/TeamWon/natesroads/MapServer" target="_blank">Access to Utah Road Raster Map Server.</a></p>
+    <style>
+   body {background-color: powderblue;}
+</style>
+    {% gizmo slider1 %}
+{% gizmo slider2 %}
+{% endblock %}
+
